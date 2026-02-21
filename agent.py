@@ -83,6 +83,12 @@ class AgentContext:
         self.config = config
         self.data = data or {}
         self.output_data = output_data or {}
+        
+        if config.profile:
+            if "agent_profile" not in self.data:
+                self.data["agent_profile"] = config.profile
+            if "agent_profile" not in self.output_data:
+                self.output_data["agent_profile"] = config.profile
         self.log = log or Log.Log()
         self.log.context = self
         self.paused = paused

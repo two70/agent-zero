@@ -178,8 +178,18 @@ def _serialize_log(log: Log):
     }
 
 
+CONTEXT_DATA_KEY_AGENT_PROFILE = "agent_profile"
+
+
 def _deserialize_context(data):
-    config = initialize_agent()
+    context_data = data.get("data", {})
+    stored_profile = context_data.get(CONTEXT_DATA_KEY_AGENT_PROFILE)
+    
+    override_settings = {}
+    if stored_profile:
+        override_settings["agent_profile"] = stored_profile
+    
+    config = initialize_agent(override_settings=override_settings if override_settings else None)
     log = _deserialize_log(data.get("log", None))
 
     context = AgentContext(

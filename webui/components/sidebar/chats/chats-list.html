@@ -30,6 +30,7 @@
                     :style="context.project?.color ? { backgroundColor: context.project.color } : { border: '1px solid var(--color-border)' }"></span>
                   <span class="chat-name"
                     x-text="context.name ? context.name : 'Chat #' + context.no"></span>
+                  <span class="agent-profile-badge" x-show="context.agent_profile && context.agent_profile !== 'agent0'" x-text="context.agent_profile"></span>
                 </div>
                 <button class="btn-icon-action chat-list-action-btn" title="Close chat" @click.stop="$confirmClick($event, () => $store.chats.killChat(context.id))">
                   <span class="material-symbols-outlined">close</span>
@@ -113,6 +114,21 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-size: var(--font-size-small);
+    }
+
+    .agent-profile-badge {
+      font-size: 0.7em;
+      background-color: var(--color-border);
+      color: var(--color-secondary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-left: 4px;
+    }
+
+    .light-mode .agent-profile-badge {
+      background-color: var(--color-border-light);
+      color: var(--color-secondary-light);
     }
 
     .chat-list-action-btn {

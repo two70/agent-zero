@@ -153,13 +153,18 @@ const model = {
   },
 
   // Create new chat
-  async newChat() {
+  async newChat(agentProfile = null) {
     try {
 
-      // first create a new chat on the backend
-      const response = await sendJsonData("/chat_create", {
+      const requestData = {
         current_context: this.selected
-      });
+      };
+      
+      if (agentProfile) {
+        requestData.agent_profile = agentProfile;
+      }
+
+      const response = await sendJsonData("/chat_create", requestData);
 
       if (response.ok) {
         this.selectChat(response.ctxid);
@@ -169,6 +174,28 @@ const model = {
     } catch (e) {
       toastFetchError("Error creating new chat", e);
     }
+  },
+
+  async setAgentProfile(contextId, profile) {
+    if (!contextId || !profile) {
+      console.error("Context ID and profile are required");
+      return false;
+    }
+
+    try {
+      const response = await sendJsonData("/chat_set_agent_profile", {
+        context: contextId,
+        profile: profile
+      });
+
+      if (response.message) {
+        toast(response.message, "success");
+        return true;
+      }
+    } catch (e) {
+      toastFetchError("Error setting agent profile", e);
+    }
+    return false;
   },
 
   deselectChat(){
