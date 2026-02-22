@@ -1,0 +1,48 @@
+<html>
+
+<head>
+  <script type="module">
+    import { store as agentProfileSelectorStore } from "/components/chat/top-section/agent-profile-store.js";
+    import { store as chatsStore } from "/components/sidebar/chats/chats-store.js";
+  </script>
+</head>
+
+<body>
+  <div x-data>
+    <template x-if="$store.agentProfileSelector && $store.chats && $store.chats.selectedContext">
+      <label class="agent-profile-selector" x-init="$store.agentProfileSelector.ensureLoaded()">
+        <span class="agent-profile-label">Agent</span>
+        <select class="agent-profile-select" :disabled="$store.agentProfileSelector.loading"
+          :value="$store.agentProfileSelector.getCurrentProfile()" @focus="$store.agentProfileSelector.ensureLoaded()"
+          @change="$store.agentProfileSelector.changeCurrentProfile($event.target.value)">
+          <option x-show="$store.agentProfileSelector.loading" value="" disabled>Loading...</option>
+          <template x-for="agentProfile in $store.agentProfileSelector.profiles" :key="agentProfile.key">
+            <option :value="agentProfile.key" x-text="agentProfile.label"></option>
+          </template>
+        </select>
+      </label>
+    </template>
+  </div>
+</body>
+
+<style>
+  .agent-profile-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: var(--spacing-sm);
+  }
+
+  .agent-profile-label {
+    font-size: var(--font-size-small);
+    color: var(--color-secondary);
+  }
+
+  .agent-profile-select {
+    min-width: 8rem;
+    max-width: 12rem;
+    font-size: var(--font-size-small);
+  }
+</style>
+
+</html>

@@ -24,7 +24,7 @@ const model = {
     return this.selected;
   },
 
-  getSelectedContext(){
+  getSelectedContext() {
     return this.selectedContext;
   },
 
@@ -146,7 +146,7 @@ const model = {
       // Increment reset counter
       if (typeof globalThis.resetCounter === 'number') {
         globalThis.resetCounter = globalThis.resetCounter + 1;
-      }      
+      }
     } catch (e) {
       toastFetchError("Error resetting chat", e);
     }
@@ -159,7 +159,7 @@ const model = {
       const requestData = {
         current_context: this.selected
       };
-      
+
       if (agentProfile) {
         requestData.agent_profile = agentProfile;
       }
@@ -189,6 +189,12 @@ const model = {
       });
 
       if (response.message) {
+        this.contexts = this.contexts.map((ctx) =>
+          ctx.id === contextId ? { ...ctx, agent_profile: profile } : ctx
+        );
+        if (this.selectedContext && this.selectedContext.id === contextId) {
+          this.selectedContext = { ...this.selectedContext, agent_profile: profile };
+        }
         toast(response.message, "success");
         return true;
       }
@@ -198,7 +204,7 @@ const model = {
     return false;
   },
 
-  deselectChat(){
+  deselectChat() {
     globalThis.deselectChat(); //TODO move here
   },
 
@@ -311,7 +317,7 @@ const model = {
     this.selected = contextId || "";
     this.selectedContext = this.contexts.find((ctx) => ctx.id === this.selected);
     // if not found in contexts, try to find in tasks < not nice, will need refactor later
-    if(!this.selectedContext) this.selectedContext = tasksStore.tasks.find((ctx) => ctx.id === this.selected);
+    if (!this.selectedContext) this.selectedContext = tasksStore.tasks.find((ctx) => ctx.id === this.selected);
     if (this.selected) {
       sessionStorage.setItem("lastSelectedChat", this.selected);
     } else {
@@ -347,7 +353,7 @@ const model = {
       const deadline = Date.now() + 800;
       while (Date.now() < deadline) {
         try {
-          
+
           const stack = Array.isArray(notificationStore.toastStack) ? notificationStore.toastStack : null;
           if (stack && stack.some((toast) => toast && toast.id === notificationId)) {
             break;

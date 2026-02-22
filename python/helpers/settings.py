@@ -645,9 +645,16 @@ def _apply_settings(previous: Settings | None):
         from agent import AgentContext
         from initialize import initialize_agent
 
-        config = initialize_agent()
         for ctx in AgentContext.all():
-            ctx.config = config  # reinitialize context config with new settings
+            profile_override = ctx.get_data("agent_profile")
+            if profile_override:
+                override_settings = {"agent_profile": profile_override}
+                profile_settings = get_profile_settings(profile_override)
+                if profile_settings:
+                    override_settings.update(profile_settings)
+                ctx.config = initialize_agent(override_settings=override_settings)
+            else:
+                ctx.config = initialize_agent()
             # apply config to agents
             agent = ctx.agent0
             while agent:
