@@ -3,6 +3,7 @@
 <head>
   <script type="module">
     import { store } from "/components/sidebar/chats/chats-store.js";
+    import { store as agentProfileStore } from "/components/chat/top-section/agent-profile-store.js";
   </script>
 </head>
 
@@ -13,7 +14,8 @@
         <div class="section-header-row">
           <h3 class="section-header">Chats</h3>
           <!-- New Chat Button -->
-          <button id="newChat" class="btn-icon-action chat-list-action-btn" @click="$store.chats.newChat()" aria-label="New Chat" title="New Chat" data-bs-placement="top" data-bs-trigger="hover">
+          <button id="newChat" class="btn-icon-action chat-list-action-btn" @click="$store.chats.newChat()"
+            aria-label="New Chat" title="New Chat" data-bs-placement="top" data-bs-trigger="hover">
             <span class="material-symbols-outlined">edit_square</span>
           </button>
         </div>
@@ -28,11 +30,13 @@
                 <div class="chat-list-button">
                   <span :class="{'project-color-ball': true, 'heartbeat': context.running}"
                     :style="context.project?.color ? { backgroundColor: context.project.color } : { border: '1px solid var(--color-border)' }"></span>
-                  <span class="chat-name"
-                    x-text="context.name ? context.name : 'Chat #' + context.no"></span>
-                  <span class="agent-profile-badge" x-show="context.agent_profile && context.agent_profile !== 'agent0'" x-text="context.agent_profile"></span>
+                  <span class="chat-name" x-text="context.name ? context.name : 'Chat #' + context.no"></span>
+                  <span class="agent-profile-badge" x-show="context.agent_profile"
+                    x-init="$store.agentProfileSelector.ensureLoaded()"
+                    x-text="$store.agentProfileSelector.getProfileLabel(context.agent_profile)"></span>
                 </div>
-                <button class="btn-icon-action chat-list-action-btn" title="Close chat" @click.stop="$confirmClick($event, () => $store.chats.killChat(context.id))">
+                <button class="btn-icon-action chat-list-action-btn" title="Close chat"
+                  @click.stop="$confirmClick($event, () => $store.chats.killChat(context.id))">
                   <span class="material-symbols-outlined">close</span>
                 </button>
               </div>
@@ -136,7 +140,7 @@
       margin-right: 8px;
     }
 
-    .chat-container:hover{
+    .chat-container:hover {
       background-color: var(--color-background-hover);
     }
 

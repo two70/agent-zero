@@ -188,6 +188,11 @@ def _deserialize_context(data):
     override_settings = {}
     if stored_profile:
         override_settings["agent_profile"] = stored_profile
+        # Load profile-specific settings
+        from python.helpers import settings
+        profile_settings = settings.get_profile_settings(stored_profile)
+        if profile_settings:
+            override_settings.update(profile_settings)
     
     config = initialize_agent(override_settings=override_settings if override_settings else None)
     log = _deserialize_log(data.get("log", None))

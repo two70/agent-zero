@@ -33,6 +33,12 @@ const model = {
     return selectedContext?.agent_profile || "agent0";
   },
 
+  getProfileLabel(profileKey) {
+    if (!profileKey) return "";
+    const profile = this.profiles.find(p => p.key === profileKey);
+    return profile ? profile.label : profileKey;
+  },
+
   async changeCurrentProfile(profileKey) {
     const chatsStore = this._getChatsStore();
     const contextId = chatsStore?.selected;

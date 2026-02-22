@@ -40,7 +40,11 @@ class ApiMessage(ApiHandler):
         # Set an agent if profile provided
         override_settings = {}
         if agent_profile:
+            from python.helpers import settings
+            profile_settings = settings.get_profile_settings(agent_profile)
             override_settings["agent_profile"] = agent_profile
+            if profile_settings:
+                override_settings.update(profile_settings)
 
         if not message:
             return Response('{"error": "Message is required"}', status=400, mimetype="application/json")
